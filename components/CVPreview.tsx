@@ -64,7 +64,7 @@ const CVPreview = forwardRef<HTMLDivElement, CVPreviewProps>(({ cvData, theme, p
   };
 
   return (
-    <div className="transform origin-top-left transition-transform duration-300" style={{ transform: 'scale(0.7)' }}>
+    <div className="transform transition-transform duration-300" style={{ transform: 'scale(0.7)' }}>
       <div ref={ref} id="cv-preview-container" className="flex flex-col gap-4">
         {/* Page 1: Main CV */}
         <div

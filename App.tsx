@@ -94,7 +94,7 @@ const App: React.FC = () => {
           isGeneratingPdf={isGeneratingPdf}
         />
       </main>
-      <aside className="w-full lg:w-1/2 p-4 md:p-8 bg-gray-200 flex items-start justify-center overflow-y-auto h-screen">
+      <aside className="w-full lg:w-1/2 p-4 md:p-8 bg-gray-200 flex items-center justify-center overflow-y-auto h-screen">
         <CVPreview ref={previewRef} cvData={cvData} theme={theme} paperSize={paperSize} />
       </aside>
     </div>
