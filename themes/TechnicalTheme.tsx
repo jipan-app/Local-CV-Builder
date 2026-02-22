@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { CVData } from '../types';
 
@@ -46,7 +45,7 @@ const TechnicalTheme: React.FC<ThemeProps> = ({ data }) => {
                     <div key={exp.id} className="mb-4">
                         <div className="flex justify-between items-baseline">
                              <h3 className="font-bold text-sm">{exp.jobTitle} @ {exp.company}</h3>
-                             <p className="text-gray-500">{formatDate(exp.startDate)} -> {exp.isCurrent ? 'Present' : formatDate(exp.endDate)}</p>
+                             <p className="text-gray-500">{formatDate(exp.startDate)} → {exp.isCurrent ? 'Present' : formatDate(exp.endDate)}</p>
                         </div>
                         <div className="pl-4">
                             <ul className="mt-1 list-disc list-inside text-gray-600 space-y-1">
@@ -62,7 +61,7 @@ const TechnicalTheme: React.FC<ThemeProps> = ({ data }) => {
                      <div key={edu.id} className="mb-3">
                         <div className="flex justify-between items-baseline">
                             <h3 className="font-bold text-sm">{edu.degree} - {edu.institution}</h3>
-                            <p className="text-gray-500">{formatDate(edu.startDate)} -> {formatDate(edu.endDate)}</p>
+                            <p className="text-gray-500">{formatDate(edu.startDate)} → {formatDate(edu.endDate)}</p>
                         </div>
                     </div>
                 ))}
