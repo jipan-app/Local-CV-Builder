@@ -64,7 +64,36 @@ export const initialCVData: CVData = {
     { id: crypto.randomUUID(), name: 'Photography' },
     { id: crypto.randomUUID(), name: 'Playing the guitar' }
   ],
-  portfolio: []
+  portfolio: [
+    {
+      id: crypto.randomUUID(),
+      projectName: 'E-Commerce Platform',
+      year: '2023',
+      description: 'A full-stack e-commerce platform built with React and Node.js, featuring real-time inventory management and payment processing.',
+      image: 'https://via.placeholder.com/400x300/3b82f6/ffffff?text=E-Commerce+Platform'
+    },
+    {
+      id: crypto.randomUUID(),
+      projectName: 'Task Management App',
+      year: '2022',
+      description: 'A collaborative task management application with drag-and-drop functionality, team workspaces, and progress tracking.',
+      image: 'https://via.placeholder.com/400x300/10b981/ffffff?text=Task+Management+App'
+    },
+    {
+      id: crypto.randomUUID(),
+      projectName: 'Weather Dashboard',
+      year: '2022',
+      description: 'A weather forecasting dashboard with interactive maps, historical data visualization, and personalized alerts.',
+      image: 'https://via.placeholder.com/400x300/f59e0b/ffffff?text=Weather+Dashboard'
+    },
+    {
+      id: crypto.randomUUID(),
+      projectName: 'Portfolio Website',
+      year: '2021',
+      description: 'A personal portfolio website showcasing projects and skills, built with modern web technologies.',
+      image: 'https://via.placeholder.com/400x300/8b5cf6/ffffff?text=Portfolio+Website'
+    }
+  ]
 };
 
 export const emptyCVData: CVData = {

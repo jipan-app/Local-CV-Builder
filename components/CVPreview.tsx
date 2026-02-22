@@ -1,17 +1,6 @@
-import React, { forwardRef } from 'react';
-import { CVData, PaperSize, Theme } from '../types';
-import ModernTheme from '../themes/ModernTheme';
-import ClassicTheme from '../themes/ClassicTheme';
-import CreativeTheme from '../themes/CreativeTheme';
-import MinimalistTheme from '../themes/MinimalistTheme';
-import TechnicalTheme from '../themes/TechnicalTheme';
-import CorporateTheme from '../themes/CorporateTheme';
-import ElegantTheme from '../themes/ElegantTheme';
-import AcademicTheme from '../themes/AcademicTheme';
-import BoldTheme from '../themes/BoldTheme';
-import GraphicTheme from '../themes/GraphicTheme';
-import InfographicTheme from '../themes/InfographicTheme';
-import VintageTheme from '../themes/VintageTheme';
+import React, { forwardRef, useMemo } from 'react';
+import { CVData, PaperSize, Theme, PortfolioItem } from '../types';
+import CVPaginationWrapper from './CVPaginationWrapper';
 import PortfolioPage from '../themes/PortfolioPage';
 
 interface CVPreviewProps {
@@ -20,70 +9,62 @@ interface CVPreviewProps {
   paperSize: PaperSize;
 }
 
-const paperStyles = {
-  [PaperSize.A4]: {
-    width: '210mm',
-    height: '297mm',
-  },
-  [PaperSize.LETTER]: {
-    width: '215.9mm',
-    height: '279.4mm',
-  },
+// Calculate the number of continuation pages needed
+const calculateContinuationPages = (cvData: CVData, paperSize: PaperSize): number => {
+    const limits = {
+        [PaperSize.A4]: { experience: 4, education: 3, certificates: 3 },
+        [PaperSize.LETTER]: { experience: 3, education: 2, certificates: 2 },
+    }[paperSize];
+
+    const contLimits = {
+        [PaperSize.A4]: { experience: 6, education: 5, certificates: 5 },
+        [PaperSize.LETTER]: { experience: 5, education: 4, certificates: 4 },
+    }[paperSize];
+
+    let count = 0;
+    let expIndex = limits.experience;
+    let eduIndex = limits.education;
+    let certIndex = limits.certificates;
+    
+    while (expIndex < cvData.experience.length || eduIndex < cvData.education.length || certIndex < cvData.certificates.length) {
+        count++;
+        expIndex = Math.min(expIndex + contLimits.experience, cvData.experience.length);
+        eduIndex = Math.min(eduIndex + contLimits.education, cvData.education.length);
+        certIndex = Math.min(certIndex + contLimits.certificates, cvData.certificates.length);
+    }
+
+    return count;
+};
+
+// Calculate the number of portfolio pages needed
+const calculatePortfolioPages = (portfolio: PortfolioItem[], paperSize: PaperSize): number => {
+    const itemsPerPage = paperSize === PaperSize.A4 ? 6 : 4;
+    const validPortfolio = portfolio.filter(item => item.image && item.projectName);
+    return Math.ceil(validPortfolio.length / itemsPerPage);
 };
 
 const CVPreview = forwardRef<HTMLDivElement, CVPreviewProps>(({ cvData, theme, paperSize }, ref) => {
-  const renderTheme = () => {
-    switch (theme) {
-      case Theme.MODERN:
-        return <ModernTheme data={cvData} />;
-      case Theme.CLASSIC:
-        return <ClassicTheme data={cvData} />;
-      case Theme.CREATIVE:
-        return <CreativeTheme data={cvData} />;
-      case Theme.MINIMALIST:
-        return <MinimalistTheme data={cvData} />;
-      case Theme.TECHNICAL:
-        return <TechnicalTheme data={cvData} />;
-      case Theme.CORPORATE:
-        return <CorporateTheme data={cvData} />;
-      case Theme.ELEGANT:
-        return <ElegantTheme data={cvData} />;
-      case Theme.ACADEMIC:
-        return <AcademicTheme data={cvData} />;
-      case Theme.BOLD:
-        return <BoldTheme data={cvData} />;
-      case Theme.GRAPHIC:
-        return <GraphicTheme data={cvData} />;
-      case Theme.INFOGRAPHIC:
-        return <InfographicTheme data={cvData} />;
-      case Theme.VINTAGE:
-        return <VintageTheme data={cvData} />;
-      default:
-        return <ModernTheme data={cvData} />;
-    }
-  };
+  // Calculate page counts
+  const continuationPages = useMemo(() => calculateContinuationPages(cvData, paperSize), [cvData, paperSize]);
+  const portfolioPages = useMemo(() => calculatePortfolioPages(cvData.portfolio, paperSize), [cvData.portfolio, paperSize]);
 
   return (
-    <div className="transform transition-transform duration-300" style={{ transform: 'scale(0.7)' }}>
-      <div ref={ref} id="cv-preview-container" className="flex flex-col gap-4">
-        {/* Page 1: Main CV */}
-        <div
-          id="cv-page-1"
-          className="bg-white shadow-2xl overflow-hidden"
-          style={{ ...paperStyles[paperSize] }}
-        >
-          {renderTheme()}
-        </div>
+    <div ref={ref} className="transform transition-transform duration-300" style={{ transform: 'scale(0.7)' }}>
+      <div id="cv-preview-container" className="flex flex-col gap-4">
+        {/* Main CV Pages (with auto-pagination) */}
+        <CVPaginationWrapper
+          cvData={cvData}
+          theme={theme}
+          paperSize={paperSize}
+        />
         
-        {/* Page 2: Portfolio */}
+        {/* Portfolio Pages (may span multiple pages) */}
         {cvData.portfolio && cvData.portfolio.length > 0 && (
-          <div
-            id="cv-page-2"
-            className="bg-white shadow-2xl overflow-hidden"
-            style={{ ...paperStyles[paperSize] }}
-          >
-            <PortfolioPage portfolio={cvData.portfolio} />
-          </div>
+          <PortfolioPage
+            portfolio={cvData.portfolio}
+            paperSize={paperSize}
+            startIndex={1 + continuationPages}
+          />
         )}
       </div>
     </div>

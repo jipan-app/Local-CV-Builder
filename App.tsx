@@ -27,7 +27,7 @@ const App: React.FC = () => {
       return;
     }
     
-    const scalingWrapper = previewContainer.parentElement as HTMLDivElement;
+    const scalingWrapper = previewContainer as HTMLDivElement;
     const originalTransform = scalingWrapper.style.transform;
     // Reset scale for accurate, full-size capture
     scalingWrapper.style.transform = 'scale(1)';
@@ -36,7 +36,11 @@ const App: React.FC = () => {
     await new Promise(resolve => setTimeout(resolve, 100));
 
     try {
-      const pages = previewContainer.querySelectorAll<HTMLDivElement>('div[id^="cv-page-"]');
+      const previewContent = previewContainer.querySelector<HTMLDivElement>('#cv-preview-container');
+      if (!previewContent) {
+        throw new Error("Preview container not found");
+      }
+      const pages = previewContent.querySelectorAll<HTMLDivElement>('div[id^="cv-page-"]');
       
       const pdf = new jsPDF({
         orientation: 'p',
@@ -94,8 +98,10 @@ const App: React.FC = () => {
           isGeneratingPdf={isGeneratingPdf}
         />
       </main>
-      <aside className="w-full lg:w-1/2 p-4 md:p-8 bg-gray-200 flex items-center justify-center overflow-y-auto h-screen">
-        <CVPreview ref={previewRef} cvData={cvData} theme={theme} paperSize={paperSize} />
+      <aside className="w-full lg:w-1/2 p-4 md:p-8 bg-gray-200 overflow-y-auto h-screen">
+        <div className="flex flex-col items-center min-h-full py-4">
+          <CVPreview ref={previewRef} cvData={cvData} theme={theme} paperSize={paperSize} />
+        </div>
       </aside>
     </div>
   );
